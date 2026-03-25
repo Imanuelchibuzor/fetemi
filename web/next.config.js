@@ -5,6 +5,7 @@ const path = require("path");
 
 module.exports = {
   outputFileTracingRoot: path.join(__dirname, "../"),
+  allowedDevOrigins: ['127.0.0.1'],
   images: {
     remotePatterns: [
       {

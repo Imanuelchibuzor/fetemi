@@ -45,7 +45,7 @@ export function ConfirmationModal({
             onClick={onClose}
             className="w-full py-4 bg-white/5 text-foreground font-black border border-border rounded-2xl hover:bg-accent/10 transition-all cursor-pointer text-xs uppercase tracking-widest"
           >
-            Wait, I'll review more
+            Wait, I&apos;ll review more
           </button>
         </div>
 

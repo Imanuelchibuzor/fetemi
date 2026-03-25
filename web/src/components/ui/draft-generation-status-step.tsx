@@ -30,9 +30,8 @@ export function GenerationStatusStep({ label, status, isCurrent }: GenerationSta
 
   return (
     <div
-      className={`flex items-center gap-4 transition-all duration-500 ${
-        !isCurrent && status === "pending" ? "opacity-20 translate-x-2" : "opacity-100 translate-x-0"
-      }`}
+      className={`flex items-center gap-4 transition-all duration-500 ${!isCurrent && status === "pending" ? "opacity-20 translate-x-2" : "opacity-100 translate-x-0"
+        }`}
     >
       <div className="shrink-0">
         {status === "completed" && <CheckCircleIcon className="w-6 h-6 text-accent" />}
@@ -42,11 +41,10 @@ export function GenerationStatusStep({ label, status, isCurrent }: GenerationSta
       </div>
       <div className="flex flex-col gap-0.5">
         <span
-          className={`font-bold tracking-tight text-sm ${
-            status === "completed" ? "text-foreground" :
+          className={`font-bold tracking-tight text-sm ${status === "completed" ? "text-foreground" :
             status === "loading" ? "text-primary" :
-            status === "error" ? "text-red-500" : "text-foreground/40"
-          }`}
+              status === "error" ? "text-red-500" : "text-foreground/40"
+            }`}
         >
           {label}
         </span>

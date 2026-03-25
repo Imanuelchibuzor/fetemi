@@ -96,6 +96,11 @@ export default function InitializePage() {
 
     setError(null);
     setIsSubmitting(true);
+    
+    // Store seed idea for later use in Review/Articles
+    localStorage.setItem("fetemi_seed_idea", inputValue);
+    localStorage.setItem("fetemi_drafts_ready", "true");
+
     await runSimulation();
     setIsSubmitting(false);
   };
@@ -125,7 +130,12 @@ export default function InitializePage() {
               <ArrowBackIcon className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               <span className="font-bold tracking-tight text-sm">Return Home</span>
             </Link>
-            <nav className="flex items-center gap-4">
+            <nav className="flex items-center gap-6">
+              <Link href="/articles" className="text-xs font-bold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity">Articles</Link>
+              <Link href="/posts" className="text-xs font-bold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity">Posts</Link>
+              {typeof window !== "undefined" && localStorage.getItem("fetemi_drafts_ready") === "true" && (
+                <Link href="/review" className="text-xs font-bold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity">Review</Link>
+              )}
               <ThemeToggle />
               <div className="text-xl font-bold tracking-tighter">Fetemi.</div>
             </nav>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { GenerationStatusStep } from "@/components/ui/generation-status-step";
+import { GenerationStatusStep } from "@/components/ui/draft-generation-status-step";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 

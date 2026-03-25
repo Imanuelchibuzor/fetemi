@@ -28,10 +28,9 @@ export function PublishingStatusStep({ label, status, isCurrent }: PublishingSta
   };
 
   return (
-    <div 
-      className={`flex items-center gap-4 transition-all duration-500 ${
-        !isCurrent && status === "pending" ? "opacity-20 translate-x-2" : "opacity-100 translate-x-0"
-      }`}
+    <div
+      className={`flex items-center gap-4 transition-all duration-500 ${!isCurrent && status === "pending" ? "opacity-20 translate-x-2" : "opacity-100 translate-x-0"
+        }`}
     >
       <div className="shrink-0">
         {status === "completed" && <CheckCircleIcon className="w-6 h-6 text-accent" />}
@@ -40,17 +39,16 @@ export function PublishingStatusStep({ label, status, isCurrent }: PublishingSta
         {status === "pending" && <div className="w-6 h-6 rounded-full border-2 border-border" />}
       </div>
       <div className="flex flex-col gap-0.5">
-        <span className={`font-bold tracking-tight text-sm ${
-          status === "completed" ? "text-foreground" : 
-          status === "loading" ? "text-primary" : 
-          status === "error" ? "text-red-500" : "text-foreground/40"
-        }`}>
+        <span className={`font-bold tracking-tight text-sm ${status === "completed" ? "text-foreground" :
+          status === "loading" ? "text-primary" :
+            status === "error" ? "text-red-500" : "text-foreground/40"
+          }`}>
           {label}
         </span>
         <div className="flex items-center gap-2">
           {getIcon()}
           <span className="text-[10px] font-medium opacity-30">
-            {status === "completed" ? "Published" : status === "loading" ? "Optimizing" : status === "error" ? "Failed" : "Waiting"}
+            {status === "completed" ? "Generated" : status === "loading" ? "Generating" : status === "error" ? "Failed" : "Waiting"}
           </span>
         </div>
       </div>

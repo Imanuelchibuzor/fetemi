@@ -1,6 +1,6 @@
 "use client";
 
-import { PublishingStatusStep } from "./publishing-status-step";
+import { PublishingStatusStep } from "./post-generation-status-step";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Link from "next/link";
@@ -55,15 +55,14 @@ export function PublishingStatusModal({ isOpen, steps, currentStepIndex, resetPi
               <div className="bg-accent/10 p-6 rounded-2xl border border-accent/20 flex flex-col gap-2">
                 <div className="flex items-center gap-2 text-accent">
                   <CheckCircleIcon className="w-5 h-5" />
-                  <span className="font-black text-sm uppercase tracking-widest">Success</span>
+                  <p className="text-sm font-medium text-foreground/70">The content has been generated.</p>
                 </div>
-                <p className="text-sm font-medium text-foreground/70">The content has been published.</p>
               </div>
               <Link
-                href="/"
+                href="/posts"
                 className="w-full py-4 bg-accent text-white font-black rounded-xl hover:bg-accent/80 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xl text-sm uppercase tracking-widest"
               >
-                Return Home
+                View Posts
                 <ArrowForwardIcon className="w-4 h-4" />
               </Link>
             </div>
@@ -81,7 +80,7 @@ export function PublishingStatusModal({ isOpen, steps, currentStepIndex, resetPi
                 <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]" />
                 <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" />
               </div>
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">Distributing...</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">Generating...</span>
             </div>
           )}
         </div>
