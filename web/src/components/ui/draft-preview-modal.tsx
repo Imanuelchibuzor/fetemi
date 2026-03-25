@@ -5,6 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import Image from "next/image";
 
 interface Article {
   id: number;
@@ -44,7 +45,6 @@ export function DraftPreviewModal({
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-8 bg-background/80 backdrop-blur-lg animate-fade-in gpu">
       <div className="max-w-5xl w-full max-h-[90vh] bg-secondary border border-white/10 rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative opacity-0 animate-fade-in-up">
-
         {/* Navigation Buttons */}
         <div className="absolute top-1/2 left-4 -translate-y-1/2 z-50">
           <button
@@ -73,24 +73,46 @@ export function DraftPreviewModal({
         </button>
 
         {/* Vertical Scrollable Content */}
-        <div ref={contentRef} className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
+        <div
+          ref={contentRef}
+          className="flex-1 overflow-y-auto no-scrollbar scroll-smooth"
+        >
           <style jsx global>{`
-            .no-scrollbar::-webkit-scrollbar { display: none; }
-            .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+            .no-scrollbar::-webkit-scrollbar {
+              display: none;
+            }
+            .no-scrollbar {
+              -ms-overflow-style: none;
+              scrollbar-width: none;
+            }
           `}</style>
 
-          <div className="w-full h-64 md:h-96 grayscale hover:grayscale-0 transition-all duration-1000">
-            <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
+          <div className="relative w-full h-64 md:h-96 grayscale hover:grayscale-0 transition-all duration-1000">
+            <Image
+              src={article.image}
+              alt={article.title}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover"
+              loading="eager"
+              fill
+              priority
+            />
           </div>
 
           <div className="p-8 md:p-16 flex flex-col gap-10 max-w-5xl mx-auto">
             <div className="flex flex-col gap-6">
               <div className="flex items-center gap-3">
-                <span className="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full">Editorial Draft 0{article.id}</span>
-                <span className="text-[10px] font-black opacity-30 uppercase tracking-widest">v2.4 Production Standard</span>
+                <span className="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full">
+                  Editorial Draft 0{article.id}
+                </span>
+                <span className="text-[10px] font-black opacity-30 uppercase tracking-widest">
+                  v2.4 Production Standard
+                </span>
               </div>
 
-              <h2 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.9] text-foreground">{article.title}</h2>
+              <h2 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.9] text-foreground">
+                {article.title}
+              </h2>
               <div className="h-1.5 w-24 bg-primary rounded-full" />
             </div>
 
@@ -101,13 +123,13 @@ export function DraftPreviewModal({
                     <h4 className="text-2xl md:text-3xl font-black mt-10 text-foreground tracking-tight border-l-4 border-primary pl-6 py-1">
                       {para.replace("## ", "")}
                     </h4>
-                  ) :
-                    para.startsWith("###") ? (
-                      <h5 className="text-xl md:text-2xl font-black mt-4 mb-2 text-foreground/90 italic">
-                        {para.replace("### ", "")}
-                      </h5>
-                    ) :
-                      <p className="">{para}</p>}
+                  ) : para.startsWith("###") ? (
+                    <h5 className="text-xl md:text-2xl font-black mt-4 mb-2 text-foreground/90 italic">
+                      {para.replace("### ", "")}
+                    </h5>
+                  ) : (
+                    <p className="">{para}</p>
+                  )}
                 </div>
               ))}
             </div>
@@ -120,7 +142,9 @@ export function DraftPreviewModal({
                 <CheckCircleIcon className="w-5 h-5" />
                 Approve & Finalize
               </button>
-              <p className="text-[10px] font-bold opacity-30 uppercase tracking-[0.4em]">Ready for Omnichannel Distribution</p>
+              <p className="text-[10px] font-bold opacity-30 uppercase tracking-[0.4em]">
+                Ready for Omnichannel Distribution
+              </p>
             </div>
           </div>
         </div>

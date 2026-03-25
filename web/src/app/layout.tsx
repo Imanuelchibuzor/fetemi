@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, DM_Serif_Display } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
@@ -31,12 +31,9 @@ export const metadata: Metadata = {
     title: "Fetemi | Editorial Automation",
     description: "AI-powered publishing workflow for modern editorial teams.",
   },
-  icons: {
-    icon: "/icon.svg",
-  }
 };
 
-export const viewport = {
+export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
 };

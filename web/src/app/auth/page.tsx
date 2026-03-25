@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -70,13 +70,14 @@ function AuthContent() {
     }
   };
 
-  useEffect(() => {
-    if (isOtpMode && otp.every(digit => digit !== "")) {
-      validateOtp();
-    }
-  }, [otp, isOtpMode]);
+  const handleSuccess = useCallback(() => {
+    setIsSuccess(true);
+    setTimeout(() => {
+      router.push(callbackUrl);
+    }, 1500);
+  }, [router, callbackUrl]);
 
-  const validateOtp = async () => {
+  const validateOtp = useCallback(async () => {
     const enteredOtp = otp.join("");
     if (enteredOtp === VALID_OTP) {
       setIsSubmitting(true);
@@ -92,14 +93,13 @@ function AuthContent() {
       setOtp(["", "", "", "", "", ""]);
       document.getElementById("otp-0")?.focus();
     }
-  };
+  }, [otp, email, handleSuccess]);
 
-  const handleSuccess = () => {
-    setIsSuccess(true);
-    setTimeout(() => {
-      router.push(callbackUrl);
-    }, 1500);
-  };
+  useEffect(() => {
+    if (isOtpMode && otp.every(digit => digit !== "")) {
+      validateOtp();
+    }
+  }, [otp, isOtpMode, validateOtp]);
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground transition-all selection:bg-primary selection:text-white">

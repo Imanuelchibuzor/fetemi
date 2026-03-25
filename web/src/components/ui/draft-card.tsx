@@ -1,4 +1,4 @@
-"use client";
+import Image from "next/image";
 
 interface DraftCardProps {
   id: number;
@@ -16,8 +16,14 @@ export function DraftCard({ id, title, excerpt, image, onClick, index }: DraftCa
       className={`group relative flex flex-col bg-secondary/30 border border-white/5 rounded-3xl overflow-hidden hover:border-primary/50 transition-all duration-500 cursor-pointer hover:-translate-y-2 opacity-0 animate-fade-in-up`}
       style={{ animationDelay: `${index * 100}ms` }}
     >
-      <div className="aspect-[16/10] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
-        <img src={image} alt={title} className="w-full h-full object-cover" />
+      <div className="relative aspect-[16/10] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+        <Image 
+          src={image} 
+          alt={title} 
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover" 
+        />
       </div>
       <div className="p-8 flex flex-col gap-4">
         <div className="text-[10px] font-black uppercase tracking-widest text-primary">Draft 0{id}</div>

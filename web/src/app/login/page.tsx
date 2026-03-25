@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -10,6 +10,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+
+import Image from "next/image";
 
 const VALID_EMAIL = "imanuelchibuzor@gmail.com";
 const VALID_OTP = "228855";
@@ -58,6 +60,13 @@ export default function LoginPage() {
     }
   };
 
+  const handleSuccess = useCallback(() => {
+    setIsSuccess(true);
+    setTimeout(() => {
+      router.push("/");
+    }, 1500);
+  }, [router]);
+
   useEffect(() => {
     if (isOtpMode && otp.every(digit => digit !== "")) {
       const enteredOtp = otp.join("");
@@ -69,14 +78,7 @@ export default function LoginPage() {
         document.getElementById("otp-0")?.focus();
       }
     }
-  }, [otp, isOtpMode]);
-
-  const handleSuccess = () => {
-    setIsSuccess(true);
-    setTimeout(() => {
-      router.push("/");
-    }, 1500);
-  };
+  }, [otp, isOtpMode, handleSuccess]);
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground transition-all selection:bg-primary selection:text-white">
@@ -91,10 +93,12 @@ export default function LoginPage() {
         {/* Left Side: Editorial Content & Image */}
         <div className="hidden md:flex flex-1 relative items-center justify-center p-12 bg-secondary/30 overflow-hidden">
           <div className="absolute inset-0 z-0">
-            <img 
+            <Image 
               src="/auth_hero_neural_security_1774211116485.png" 
               alt="Neural Security" 
-              className="w-full h-full object-cover opacity-50 grayscale hover:grayscale-0 transition-all duration-[3000ms]"
+              fill
+              className="object-cover opacity-50 grayscale hover:grayscale-0 transition-all duration-[3000ms]"
+              priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
           </div>
