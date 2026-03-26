@@ -6,12 +6,11 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    // Call n8n from the server (No CORS issues here)
     const n8nResponse = await fetch(process.env.N8N_WEBHOOK_URL!, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-workflow-secret": process.env.WORKFLOW_SECRET!, // Hidden from browser
+        "x-workflow-secret": process.env.WORKFLOW_SECRET!, 
       },
       body: JSON.stringify(body),
     });

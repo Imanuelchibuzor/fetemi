@@ -11,8 +11,8 @@ interface Article {
   id: number;
   title: string;
   excerpt: string;
-  content: string;
-  image: string;
+  body: string;
+  image_url: string;
 }
 
 interface DraftPreviewModalProps {
@@ -37,7 +37,13 @@ export function DraftPreviewModal({
   const contentRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(article.title);
-  const [editedContent, setEditedContent] = useState(article.content);
+  const [editedContent, setEditedContent] = useState(article.body);
+
+  useEffect(() => {
+    setEditedTitle(article.title);
+    setEditedContent(article.body);
+    setIsEditing(false); // Optional: stop editing when switching articles
+  }, [article.id, article.title, article.body]);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -49,12 +55,12 @@ export function DraftPreviewModal({
     onApprove({
       ...article,
       title: editedTitle,
-      content: editedContent
+      body: editedContent
     });
   };
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-8 bg-background/80 backdrop-blur-lg animate-fade-in gpu">
+    <div className="fixed inset-0 z-1000 flex items-center justify-center p-4 md:p-8 bg-background/80 backdrop-blur-lg animate-fade-in gpu">
       <div className="max-w-5xl w-full max-h-[90vh] bg-secondary border border-white/10 rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative opacity-0 animate-fade-in-up">
         {/* Navigation Buttons */}
         <div className="absolute top-1/2 left-4 -translate-y-1/2 z-50">
@@ -78,7 +84,7 @@ export function DraftPreviewModal({
 
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 z-[60] w-10 h-10 flex items-center justify-center bg-background/80 hover:bg-red-500 text-foreground hover:text-white rounded-full transition-all cursor-pointer backdrop-blur-sm border border-white/5 gpu"
+          className="absolute top-6 right-6 z-60 w-10 h-10 flex items-center justify-center bg-background/80 hover:bg-red-500 text-foreground hover:text-white rounded-full transition-all cursor-pointer backdrop-blur-sm border border-white/5 gpu"
         >
           <CloseIcon className="w-5 h-5" />
         </button>
@@ -100,12 +106,13 @@ export function DraftPreviewModal({
 
           <div className="relative w-full h-64 md:h-96 grayscale hover:grayscale-0 transition-all duration-1000">
             <Image
-              src={article.image}
+              src={article.image_url}
               alt={article.title}
               sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover"
-              loading="eager"
+              className="object-cover transition-opacity duration-300"
+              onLoadingComplete={(img) => img.classList.remove("opacity-0")}
               fill
+              loading="eager"
               priority
             />
 
@@ -113,12 +120,17 @@ export function DraftPreviewModal({
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 z-50 bg-background/40 backdrop-blur-xl p-2 rounded-full border border-white/10 shadow-2xl">
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-black text-[10px] uppercase tracking-widest transition-all cursor-pointer ${isEditing
-                  ? "bg-primary text-white"
-                  : "bg-white/10 hover:bg-white/20 text-white"
-                  }`}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-black text-[10px] uppercase tracking-widest transition-all cursor-pointer ${
+                  isEditing
+                    ? "bg-primary text-white"
+                    : "bg-white/10 hover:bg-white/20 text-white"
+                }`}
               >
-                {isEditing ? <SaveIcon className="w-3.5 h-3.5" /> : <EditIcon className="w-3.5 h-3.5" />}
+                {isEditing ? (
+                  <SaveIcon className="w-3.5 h-3.5" />
+                ) : (
+                  <EditIcon className="w-3.5 h-3.5" />
+                )}
                 {isEditing ? "Done" : "Edit Draft"}
               </button>
             </div>
@@ -139,11 +151,11 @@ export function DraftPreviewModal({
                 <textarea
                   value={editedTitle}
                   onChange={(e) => setEditedTitle(e.target.value)}
-                  className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.9] text-foreground bg-secondary/50 border-b-4 border-primary p-4 rounded-t-2xl w-full focus:outline-none resize-none"
+                  className="text-4xl md:text-5xl font-black tracking-tighter leading-[0.9] text-foreground bg-secondary/50 border-b-4 border-primary p-4 rounded-t-2xl w-full focus:outline-none resize-none"
                   rows={2}
                 />
               ) : (
-                <h2 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.9] text-foreground">
+                <h2 className="text-4xl md:text-5xl font-black tracking-tighter leading-[0.9] text-foreground">
                   {editedTitle}
                 </h2>
               )}
@@ -155,24 +167,26 @@ export function DraftPreviewModal({
                 <textarea
                   value={editedContent}
                   onChange={(e) => setEditedContent(e.target.value)}
-                  className="w-full min-h-[500px] bg-secondary/30 border border-white/5 p-8 rounded-[32px] text-foreground/90 font-medium text-lg md:text-xl leading-relaxed focus:outline-none focus:border-primary/50 transition-colors"
+                  className="w-full min-h-125 bg-secondary/30 border border-white/5 p-8 rounded-4xl text-foreground/90 font-medium text-lg md:text-xl leading-relaxed focus:outline-none focus:border-primary/50 transition-colors"
                 />
               ) : (
-                editedContent.split("\n\n").map((para, i) => (
-                  <div key={i}>
-                    {para.startsWith("##") ? (
-                      <h4 className="text-2xl md:text-3xl font-black mt-10 text-foreground tracking-tight border-l-4 border-primary pl-6 py-1">
-                        {para.replace("## ", "")}
-                      </h4>
-                    ) : para.startsWith("###") ? (
-                      <h5 className="text-xl md:text-2xl font-black mt-4 mb-2 text-foreground/90 italic">
-                        {para.replace("### ", "")}
-                      </h5>
-                    ) : (
-                      <p className="">{para}</p>
-                    )}
-                  </div>
-                ))
+                editedContent
+                  .split("\n\n")
+                  .map((para, i) => (
+                    <div key={i}>
+                      {para.startsWith("##") ? (
+                        <h4 className="text-xl md:text-2xl font-black mt-10 text-foreground tracking-tight border-l-4 border-primary pl-6 py-1">
+                          {para.replace("## ", "")}
+                        </h4>
+                      ) : para.startsWith("###") ? (
+                        <h5 className="text-lg md:text-xl font-black mt-4 mb-2 text-foreground/90 italic">
+                          {para.replace("### ", "")}
+                        </h5>
+                      ) : (
+                        <p className="">{para}</p>
+                      )}
+                    </div>
+                  ))
               )}
             </div>
 
@@ -182,7 +196,7 @@ export function DraftPreviewModal({
                 className="px-10 py-5 bg-accent text-white font-black rounded-full hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer shadow-2xl shadow-accent/40 text-sm uppercase tracking-[0.2em]"
               >
                 <CheckCircleIcon className="w-5 h-5" />
-                Approve & Finalize
+                Approve & Generate Posts
               </button>
               <p className="text-[10px] font-bold opacity-30 uppercase tracking-[0.4em]">
                 Ready for Omnichannel Generation

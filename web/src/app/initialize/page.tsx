@@ -9,38 +9,13 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthGuard } from "@/components/auth-guard";
 import { StrategyToggle } from "@/components/features/initialize/StrategyToggle";
 import { WorkflowInput } from "@/components/features/initialize/WorkflowInput";
-// import { SimulationModal } from "@/components/features/initialize/SimulationModal";
 import { Toast } from "@/components/ui/toast";
-import Loader from "@/components/ui/loader";
-
-// type Status = "pending" | "loading" | "completed" | "error";
-
-// interface Step {
-//   id: number;
-//   label: string;
-//   status: Status;
-// }
-
-// const INITIAL_STEPS: Step[] = [
-//   { id: 1, label: "Process initiated", status: "pending" },
-//   { id: 2, label: "Ideas summarized", status: "pending" },
-//   { id: 3, label: "Article 1 generated", status: "pending" },
-//   { id: 4, label: "Image 1 generated", status: "pending" },
-//   { id: 5, label: "Article 2 generated", status: "pending" },
-//   { id: 6, label: "Image 2 generated", status: "pending" },
-//   { id: 7, label: "Article 3 generated", status: "pending" },
-//   { id: 8, label: "Image 3 generated", status: "pending" },
-//   { id: 9, label: "Ready for review", status: "pending" },
-// ];
 
 export default function InitializePage() {
   const [inputType, setInputType] = useState<"url" | "idea">("url");
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // const [showModal, setShowModal] = useState(false);
-  // const [steps, setSteps] = useState<Step[]>(INITIAL_STEPS);
-  // const [currentStepIndex, setCurrentStepIndex] = useState(-1);
   const [toast, setToast] = useState<{
     type: "error" | "success";
     title: string;
@@ -68,94 +43,6 @@ export default function InitializePage() {
     return null;
   };
 
-  // const runWorkflow = async () => {
-  //   const jobId = crypto.randomUUID();
-
-  //   // 1. Reset steps and immediately set the first step to loading
-  //   // setSteps(
-  //   //   INITIAL_STEPS.map((s) =>
-  //   //     s.id === 1 ? { ...s, status: "loading" } : { ...s, status: "pending" },
-  //   //   ),
-  //   // );
-  //   // setShowModal(true);
-
-  //   try {
-  //     // 2. The initial handshake with your server
-  //     const response = await fetch("/api/workflow/generate-drafts", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         id: jobId,
-  //         action: "generate_drafts",
-  //         type: inputType,
-  //         data: inputValue,
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json();
-  //       throw new Error(errorData.error || "Workflow failed to start");
-  //     }
-
-  //     // 3. Response is OK: Step 1 is done, Step 2 starts loading
-  //     // setSteps((prev) =>
-  //     //   prev.map((step) => {
-  //     //     if (step.id === 1) return { ...step, status: "completed" };
-  //     //     if (step.id === 2) return { ...step, status: "loading" };
-  //     //     return step;
-  //     //   }),
-  //     // );
-
-  //     // 4. Start listening for the remaining steps (3 through 9)
-  //     // const eventSource = new EventSource(
-  //     //   `/api/workflow/stream?jobId=${jobId}`,
-  //     // );
-
-  //     // eventSource.onmessage = (event) => {
-  //     //   const { stepId, status } = JSON.parse(event.data);
-
-  //     //   setSteps((prev) =>
-  //     //     prev.map((step) => {
-  //     //       // 1. If n8n says this specific step failed
-  //     //       if (step.id === stepId && status === "error") {
-  //     //         eventSource.close(); // Stop listening
-  //     //         return { ...step, status: "error" };
-  //     //       }
-
-  //     //       // 2. If the step completed successfully
-  //     //       if (step.id === stepId) {
-  //     //         return { ...step, status: "completed" };
-  //     //       }
-
-  //     //       // 3. Set the NEXT step to loading ONLY if current didn't error
-  //     //       if (step.id === stepId + 1 && status !== "error") {
-  //     //         return { ...step, status: "loading" };
-  //     //       }
-
-  //     //       return step;
-  //     //     }),
-  //     //   );
-
-  //     //   if (stepId === 9 || status === "error") {
-  //     //     eventSource.close();
-  //     //   }
-  //     // };
-
-  //     // eventSource.onerror = () => {
-  //     //   eventSource.close();
-  //     //   // set current loading step to error
-  //     // };
-  //   } catch (error: unknown) {
-  //     // Set the current loading step to error status
-  //     // setSteps((prev) =>
-  //     //   prev.map((step) =>
-  //     //     step.status === "loading" ? { ...step, status: "error" } : step,
-  //     //   ),
-  //     // );
-  //     throw error;
-  //   }
-  // };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -167,10 +54,8 @@ export default function InitializePage() {
 
     setError(null);
     setIsSubmitting(true);
-
     const jobId = crypto.randomUUID();
-    localStorage.setItem("fetemi_seed_idea", inputValue);
-    localStorage.setItem("fetemi_drafts_ready", "true");
+
     try {
       const response = await fetch("/api/workflow/generate-drafts", {
         method: "POST",
@@ -192,8 +77,9 @@ export default function InitializePage() {
       setToast({
         type: "success",
         title: "Success",
-        message: "Workflow started! This may take up to 5mins",
+        message: "Workflow started! This may take up to 5 minutes",
       });
+      localStorage.setItem("jobId", jobId);
     } catch (error: unknown) {
       setToast({
         type: "error",
@@ -216,12 +102,6 @@ export default function InitializePage() {
     if (error) setError(null);
   };
 
-  // const resetPipeline = () => {
-  //   setShowModal(false);
-  //   setCurrentStepIndex(-1);
-  //   setSteps(INITIAL_STEPS);
-  // };
-
   return (
     <AuthGuard>
       <div className="flex flex-col min-h-screen bg-background text-foreground selection:bg-primary selection:text-white overflow-x-hidden transition-all">
@@ -238,6 +118,12 @@ export default function InitializePage() {
             </Link>
             <nav className="flex items-center gap-6">
               <Link
+                href="/review"
+                className="text-xs font-bold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
+              >
+                Review
+              </Link>
+              <Link
                 href="/articles"
                 className="text-xs font-bold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
               >
@@ -249,15 +135,6 @@ export default function InitializePage() {
               >
                 Posts
               </Link>
-              {typeof window !== "undefined" &&
-                localStorage.getItem("fetemi_drafts_ready") === "true" && (
-                  <Link
-                    href="/review"
-                    className="text-xs font-bold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
-                  >
-                    Review
-                  </Link>
-                )}
               <ThemeToggle />
               <div className="text-xl font-bold tracking-tighter">Fetemi.</div>
             </nav>
@@ -381,13 +258,6 @@ export default function InitializePage() {
             onClose={() => setToast(null)}
           />
         )}
-
-        {/* <SimulationModal
-          isOpen={showModal}
-          steps={steps}
-          currentStepIndex={currentStepIndex}
-          onReset={resetPipeline}
-        /> */}
       </div>
     </AuthGuard>
   );

@@ -7,6 +7,7 @@ interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  confirming: boolean;
   title: string;
   description: string;
 }
@@ -15,14 +16,15 @@ export function ConfirmationModal({
   isOpen,
   onClose,
   onConfirm,
+  confirming,
   title,
-  description
+  description,
 }: ConfirmationModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-background/80 backdrop-blur-xl animate-fade-in gpu">
-      <div className="max-w-xl w-full bg-secondary border border-white/10 rounded-[32px] p-8 shadow-2xl flex flex-col gap-6 opacity-0 animate-fade-in-up">
+    <div className="fixed inset-0 z-2000 flex items-center justify-center p-6 bg-background/80 backdrop-blur-xl animate-fade-in gpu">
+      <div className="max-w-xl w-full bg-secondary border border-white/10 rounded-4xl p-8 shadow-2xl flex flex-col gap-6 opacity-0 animate-fade-in-up">
         <div className="w-16 h-16 bg-accent/20 rounded-2xl flex items-center justify-center mx-auto">
           <CheckCircleIcon className="w-10 h-10 text-accent" />
         </div>
@@ -37,9 +39,17 @@ export function ConfirmationModal({
         <div className="flex gap-3 pt-2">
           <button
             onClick={onConfirm}
-            className="w-full py-4 bg-accent text-white font-black rounded-2xl hover:bg-accent/80 transition-all cursor-pointer shadow-lg shadow-accent/20 uppercase tracking-widest text-xs"
+            className="w-full py-4 bg-accent text-white font-black rounded-2xl hover:bg-accent/80 transition-all cursor-pointer shadow-lg shadow-accent/20 uppercase tracking-widest text-xs disabled:cursor-not-allowed"
+            disabled={confirming}
           >
-            Yes, Finalize Draft
+            {confirming ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Running Agents...
+              </div>
+            ) : (
+              "Yes, Finalize Draft"
+            )}
           </button>
           <button
             onClick={onClose}

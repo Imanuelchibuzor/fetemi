@@ -13,6 +13,11 @@ module.exports = {
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "fdjqglvcootjzmacsdaf.supabase.co",
+        pathname: "/**",
+      },
     ],
   },
 };
