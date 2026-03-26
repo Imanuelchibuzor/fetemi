@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { auth } from "@/lib/auth";
+import Loader from "./ui/loader";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -30,12 +31,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
 
   // Optionally show a loading state while checking auth
   if (!authorized) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center">
-        <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-6" />
-        <h2 className="text-xl font-black uppercase tracking-widest text-foreground/40">Verifying Identity...</h2>
-      </div>
-    );
+    return <Loader text="Verifying Identity..." />;
   }
 
   return <>{children}</>;

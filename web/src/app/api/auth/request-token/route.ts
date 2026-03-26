@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   }
 
   const { data: user } = await supabaseServer
-    .from("Users")
+    .from("users")
     .select("*")
     .eq("email", email)
     .single();
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
   // Save token
   await supabaseServer
-    .from("Users")
+    .from("users")
     .update({
       login_token: token,
       token_expires_at: expiresAt,

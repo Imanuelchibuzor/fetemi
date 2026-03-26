@@ -5,7 +5,7 @@ export async function POST(req: Request) {
   const { email, token } = await req.json();
 
   const { data: user } = await supabaseServer
-    .from("Users")
+    .from("users")
     .select("*")
     .eq("email", email)
     .single();

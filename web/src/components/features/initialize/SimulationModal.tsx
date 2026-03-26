@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GenerationStatusStep } from "@/components/ui/draft-generation-status-step";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 interface Step {
@@ -38,8 +37,8 @@ export function SimulationModal({ isOpen, steps, currentStepIndex, onReset }: Si
   const hasError = steps.some(s => s.status === "error");
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-background/60 backdrop-blur-lg animate-fade-in gpu">
-      <div className="max-w-md w-full bg-secondary/50 border border-white/10 rounded-[32px] p-8 shadow-2xl shadow-black/80 flex flex-col gap-8 opacity-0 animate-fade-in-up">
+    <div className="fixed inset-0 z-200 flex items-center justify-center p-6 bg-background/60 backdrop-blur-lg animate-fade-in gpu">
+      <div className="max-w-md w-full bg-secondary/50 border border-white/10 rounded-4xl p-8 shadow-2xl shadow-black/80 flex flex-col gap-8 opacity-0 animate-fade-in-up">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-1">

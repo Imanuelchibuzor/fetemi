@@ -8,12 +8,12 @@ import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import ShareIcon from "@mui/icons-material/Share";
 import LogoutIcon from "@mui/icons-material/Logout";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import XIcon from "@mui/icons-material/X";
 import EmailIcon from "@mui/icons-material/Email";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { auth } from "@/lib/auth";
+import { Toast } from "@/components/ui/toast";
 
 export default function Home() {
   const router = useRouter();
@@ -69,21 +69,11 @@ export default function Home() {
 
       {/* Logout Toast */}
       {showLogoutToast && (
-        <div className="fixed bottom-8 right-8 z-100 animate-fade-in-up">
-          <div className="bg-secondary/90 backdrop-blur-xl border border-white/10 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4">
-            <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent">
-              <CheckCircleIcon className="w-5 h-5" />
-            </div>
-            <div className="flex flex-col text-left">
-              <span className="text-xs font-black uppercase tracking-widest leading-none">
-                Session Terminated
-              </span>
-              <span className="text-[10px] opacity-40 font-bold mt-1 uppercase tracking-widest">
-                Logged out successfully.
-              </span>
-            </div>
-          </div>
-        </div>
+        <Toast
+          type="success"
+          title="Session Terminated"
+          message="Logged out successfully."
+        />
       )}
 
       <main className="flex-1 pt-20">
