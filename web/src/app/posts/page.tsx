@@ -5,6 +5,8 @@ import Link from "next/link";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
 import XIcon from "@mui/icons-material/X";
 import MailIcon from "@mui/icons-material/Email";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -46,6 +48,9 @@ export default function PostsPage() {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [fetching, setFetching] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(selectedPost?.body);
+  const [publishing, setPublishing] = useState<boolean>(false);
   const [toast, setToast] = useState<{
     type: "error" | "success";
     title: string;
@@ -84,6 +89,43 @@ export default function PostsPage() {
     filterType === "all"
       ? posts
       : posts.filter((p: Post) => p.type === filterType);
+
+  useEffect(() => {
+    setEditedContent(selectedPost?.body);
+    setIsEditing(false);
+  }, [selectedPost]);
+
+  const handlePublish = async () => {
+    setPublishing(true);
+
+    try {
+      await fetch("/api/workflow/publish-post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: selectedPost?.id,
+          body: editedContent,
+          subject: selectedPost?.subject || "",
+          type: selectedPost?.type,
+        }),
+      });
+
+      setToast({
+        type: "success",
+        title: "Triggered!",
+        message: `The post is being published.`,
+      });
+      setSelectedPost(null);
+    } catch (error) {
+      setToast({
+        type: "error",
+        title: "Publishing Failed",
+        message: error instanceof Error ? error.message : "Network error",
+      });
+    } finally {
+      setPublishing(false);
+    }
+  };
 
   return (
     <AuthGuard>
@@ -295,6 +337,25 @@ export default function PostsPage() {
                         }
                       </div>
                     </div>
+                    {selectedPost?.status === "pending" && (
+                      <div className="flex items-center gap-3 z-50 bg-background/40 backdrop-blur-xl p-2 rounded-full border border-white/10 shadow-2xl">
+                        <button
+                          onClick={() => setIsEditing(!isEditing)}
+                          className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-black text-[10px] uppercase tracking-widest transition-all cursor-pointer ${
+                            isEditing
+                              ? "bg-primary text-white"
+                              : "bg-white/10 hover:bg-white/20 text-white"
+                          }`}
+                        >
+                          {isEditing ? (
+                            <SaveIcon className="w-3.5 h-3.5" />
+                          ) : (
+                            <EditIcon className="w-3.5 h-3.5" />
+                          )}
+                          {isEditing ? "Done" : "Edit Draft"}
+                        </button>
+                      </div>
+                    )}
                     <span
                       className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${STATUS_COLORS[selectedPost.status]}`}
                     >
@@ -302,39 +363,34 @@ export default function PostsPage() {
                     </span>
                   </div>
 
-                  {selectedPost.image_url ? (
-                    <div className="relative w-full h-64 md:h-80 grayscale hover:grayscale-0 transition-all duration-1000">
-                      <Image
-                        src={selectedPost.image_url}
-                        alt={selectedPost.subject || "Post image"}
-                        fill
-                        className="object-cover rounded-2xl"
-                        priority
-                      />
-                      <div className="absolute inset-0 bg-linear-to-t from-secondary via-transparent to-transparent" />
-                    </div>
-                  ) : (
-                    <div className="w-full h-32 bg-white/5 border border-dashed border-white/10 rounded-2xl flex items-center justify-center">
-                      <p className="text-[10px] uppercase tracking-widest opacity-30 font-black">
-                        No image attached to this {selectedPost.type} post
-                      </p>
-                    </div>
-                  )}
-
                   <div className="bg-background/40 border border-white/5 rounded-3xl p-8 backdrop-blur-md">
-                    <div
-                      className="text-lg font-medium text-foreground/80 leading-relaxed whitespace-pre-wrap selection:bg-primary/30"
-                      dangerouslySetInnerHTML={{ __html: selectedPost.body }}
-                    />
+                    {isEditing ? (
+                      <textarea
+                        value={editedContent}
+                        onChange={(e) => setEditedContent(e.target.value)}
+                        className="w-full min-h-[90vh] bg-secondary/30 border border-white/5 p-8 rounded-4xl text-foreground/90 font-medium text-lg md:text-xl leading-relaxed focus:outline-none focus:border-primary/50 transition-colors"
+                      />
+                    ) : (
+                      <div
+                        className="text-lg font-medium text-foreground/80 leading-relaxed whitespace-pre-wrap selection:bg-primary/30"
+                        dangerouslySetInnerHTML={{
+                          __html: editedContent ?? "",
+                        }}
+                      />
+                    )}
                   </div>
 
                   {/* Conditional Action Buttons */}
                   <div className="flex gap-3 mt-4">
                     {selectedPost.status === "pending" && (
                       <>
-                        <button className="flex-1 py-4 bg-accent text-white font-black rounded-2xl hover:bg-accent/80 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xl text-xs uppercase tracking-widest">
+                        <button
+                          className="flex-1 py-4 bg-accent text-white font-black rounded-2xl hover:bg-accent/80 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xl text-xs uppercase tracking-widest"
+                          onClick={handlePublish}
+                          disabled={publishing}
+                        >
                           <PublishIcon className="w-4 h-4" />
-                          Publish Now
+                          {publishing ? "Publishing..." : "Publish Now"}
                         </button>
                         <button className="flex-1 py-4 bg-white/5 text-foreground font-black border border-white/10 rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center gap-2 cursor-pointer text-xs uppercase tracking-widest">
                           <EventIcon className="w-4 h-4" />

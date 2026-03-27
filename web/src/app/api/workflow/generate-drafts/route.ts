@@ -10,7 +10,6 @@ export async function POST(req: Request) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-workflow-secret": process.env.WORKFLOW_SECRET!, 
       },
       body: JSON.stringify(body),
     });

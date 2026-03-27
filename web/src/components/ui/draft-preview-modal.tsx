@@ -42,7 +42,7 @@ export function DraftPreviewModal({
   useEffect(() => {
     setEditedTitle(article.title);
     setEditedContent(article.body);
-    setIsEditing(false); // Optional: stop editing when switching articles
+    setIsEditing(false);
   }, [article.id, article.title, article.body]);
 
   useEffect(() => {
