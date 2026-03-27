@@ -36,6 +36,7 @@ export default function ArticlesPage() {
 
   const fetchApprovedArticles = async () => {
     setFetching(true);
+
     try {
       const response = await fetch("/api/articles/approved");
       const data = await response.json();
@@ -80,6 +81,12 @@ export default function ArticlesPage() {
               </Link>
               <nav className="flex items-center gap-6">
                 <Link
+                  href="/initialize"
+                  className="text-xs font-bold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
+                >
+                  Initialize
+                </Link>
+                <Link
                   href="/articles"
                   className="text-xs font-black uppercase tracking-widest text-primary underline underline-offset-8 decoration-2"
                 >
@@ -114,7 +121,7 @@ export default function ArticlesPage() {
                   </p>
                 </div>
 
-                <div className="relative group max-w-md w-full">
+                {/* <div className="relative group max-w-md w-full">
                   <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/30 group-focus-within:text-primary transition-colors" />
                   <input
                     type="text"
@@ -123,7 +130,7 @@ export default function ArticlesPage() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-12 pr-6 py-4 bg-secondary border border-white/5 rounded-2xl text-sm font-medium focus:outline-none focus:border-primary/50 transition-all placeholder:text-foreground/20"
                   />
-                </div>
+                </div> */}
               </div>
 
               {articles.length > 0 ? (

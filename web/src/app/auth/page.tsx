@@ -102,9 +102,9 @@ function AuthContent() {
 
       const result = await res.json();
 
-      if (!res.ok) setError(result.error);
-      const token = await auth.generateToken(email);
+      if (!res.ok) return setError(result.error);
 
+      const token = await auth.generateToken(email);
       auth.saveSession(email, token);
       handleSuccess();
     } catch (err: unknown) {

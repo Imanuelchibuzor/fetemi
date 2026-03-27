@@ -14,6 +14,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { auth } from "@/lib/auth";
 import { Toast } from "@/components/ui/toast";
+import Link from "next/link";
 
 export default function Home() {
   const router = useRouter();
@@ -46,12 +47,22 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="text-2xl font-bold tracking-tighter">Fetemi.</div>
           <nav className="flex items-center gap-6 text-sm font-medium">
-            <a
-              href="#how-it-works"
-              className="hidden md:block hover:text-primary transition-colors cursor-pointer text-foreground/70"
-            >
-              How it Works
-            </a>
+            {auth.isAuthenticated() && (
+              <>
+                <Link
+                  href="/articles"
+                  className="text-xs font-bold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
+                >
+                  Articles
+                </Link>
+                <Link
+                  href="/posts"
+                  className="text-xs font-bold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
+                >
+                  Posts
+                </Link>
+              </>
+            )}
             <ThemeToggle />
             {isLoggedIn && (
               <button
@@ -73,6 +84,7 @@ export default function Home() {
           type="success"
           title="Session Terminated"
           message="Logged out successfully."
+          onClose={() => setShowLogoutToast(false)}
         />
       )}
 
