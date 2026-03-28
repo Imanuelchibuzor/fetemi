@@ -18,7 +18,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthGuard } from "@/components/auth-guard";
 import Loader from "@/components/ui/loader";
 import { Toast } from "@/components/ui/toast";
-import Image from "next/image";
+import { ScheduleModal } from "@/components/ui/schedule-modal";
 
 interface Post {
   id: string;
@@ -49,6 +49,7 @@ export default function PostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [fetching, setFetching] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isScheduleOpen, setIsScheduleOpen] = useState<boolean>(false);
   const [editedContent, setEditedContent] = useState(selectedPost?.body);
   const [publishing, setPublishing] = useState<boolean>(false);
   const [toast, setToast] = useState<{
@@ -317,7 +318,7 @@ export default function PostsPage() {
 
           {/* Post Detail Modal */}
           {selectedPost && (
-            <div className="fixed inset-0 z-1000 flex items-center justify-center p-4 md:p-8 bg-background/80 backdrop-blur-xl animate-fade-in gpu">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-background/80 backdrop-blur-xl animate-fade-in gpu">
               <div className="max-w-4xl w-full max-h-[90vh] bg-secondary border border-white/10 rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative opacity-0 animate-fade-in-up">
                 <button
                   onClick={() => setSelectedPost(null)}
@@ -392,7 +393,10 @@ export default function PostsPage() {
                           <PublishIcon className="w-4 h-4" />
                           {publishing ? "Publishing..." : "Publish Now"}
                         </button>
-                        <button className="flex-1 py-4 bg-white/5 text-foreground font-black border border-white/10 rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center gap-2 cursor-pointer text-xs uppercase tracking-widest">
+                        <button
+                          className="flex-1 py-4 bg-white/5 text-foreground font-black border border-white/10 rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center gap-2 cursor-pointer text-xs uppercase tracking-widest"
+                          onClick={() => setIsScheduleOpen(true)}
+                        >
                           <EventIcon className="w-4 h-4" />
                           Schedule
                         </button>
@@ -414,6 +418,21 @@ export default function PostsPage() {
                 </div>
               </div>
             </div>
+          )}
+
+          {isScheduleOpen && selectedPost && (
+            <ScheduleModal
+              post={selectedPost}
+              onClose={() => setIsScheduleOpen(false)}
+              onSuccess={() => {
+                fetchPosts(); // Refresh your list to show the "Scheduled" badge
+                setToast({
+                  type: "success",
+                  title: "Scheduled!",
+                  message: `The post has been scheduled successfully.`,
+                });
+              }}
+            />
           )}
         </div>
       )}
